@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
-* Студент: [Даниил Колотыгин](https://up.htmlacademy.ru/javascript-individual/2/user/2593079).
-* Наставник: `Неизвестно`.
+- Студент: [Даниил Колотыгин](https://up.htmlacademy.ru/javascript-individual/2/user/2593079).
+- Наставник: `Никита Сигов`.
 
 ---
 
