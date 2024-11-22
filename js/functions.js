@@ -1,15 +1,14 @@
 function checkStr(string, length) {
   return string.length <= length;
 }
-
 checkStr('fff', 3);
 
-function isPalimdrome(string) {
-  string = string.replaceAll(' ', '');
+function isPalindrome(string) {
+  string = string.toLowerCase().replaceAll(' ', '');
   const reversedString = string.split('').reverse().join('');
   return string === reversedString;
 }
-isPalimdrome('ooppoo ooppoo');
+isPalindrome('ooppoo ooppoo');
 function getNums(string) {
   string = String(string);
   let result = '';
