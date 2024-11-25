@@ -59,37 +59,38 @@ function getUniqueId(min, max) {
 function getRandomElement(elements) {
   return elements[getRandomInt(0, elements.length - 1)];
 }
+const getPhotoId = getUniqueId(1, 25);
+const getCommentId = getUniqueId(1, 1000);
+function createPhoto() {
 
-function createPhotos() {
-  const getPhotoId = getUniqueId(1, 25);
-  const getCommentId = getUniqueId(1, 1000);
-  const photos = [];
+  const photoId = getPhotoId();
+  const comments = [];
 
-  for (let i = 0; i < 25; i++) {
-    const photoId = getPhotoId();
-    const comments = [];
-
-    for (let j = 0; j < getRandomInt(0, 30); j++) {
-      const commentId = getCommentId();
-      const comment = {
-        id: commentId,
-        avatar: `img/avatar-${getRandomInt(1, 6)}.svg`,
-        message: getRandomElement(MESSAGES),
-        name: getRandomElement(NAMES),
-      };
-      comments.push(comment);
-    }
-    const photo = {
-      id: photoId,
-      url: `photos/${photoId}.jpg`,
-      description: getRandomElement(DESCRIPTIONS),
-      likes: getRandomInt(15, 200),
-      comments: comments
+  for (let j = 0; j < getRandomInt(0, 30); j++) {
+    const commentId = getCommentId();
+    const comment = {
+      id: commentId,
+      avatar: `img/avatar-${getRandomInt(1, 6)}.svg`,
+      message: getRandomElement(MESSAGES),
+      name: getRandomElement(NAMES),
     };
-
-    photos.push(photo);
+    comments.push(comment);
   }
+  const photo = {
+    id: photoId,
+    url: `photos/${photoId}.jpg`,
+    description: getRandomElement(DESCRIPTIONS),
+    likes: getRandomInt(15, 200),
+    comments: comments
+  };
 
+  return photo;
+}
+
+function getPhotos() {
+  const photos = Array.from({ length: 25 }, createPhoto);
   return photos;
 }
-createPhotos();
+
+getPhotos();
+
