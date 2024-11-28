@@ -99,5 +99,4 @@ function getComments() {
   return comments;
 }
 
-console.log(getPhotos());
-
+getPhotos();
