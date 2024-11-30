@@ -22,3 +22,30 @@ function getNums(string) {
 
 getNums('ou8kj9');
 
+function getHours(time) {
+  return parseInt(time.split(':')[0], 10);
+}
+function getMinutes(time) {
+  return parseInt(time.split(':')[1], 10);
+}
+function checkMeetingTime(from, until, meetTime, duration) {
+  const fromHours = getHours(from);
+  const fromMinutes = getMinutes(from);
+  const untilHours = getHours(until);
+  const untilMinutes = getMinutes(until);
+  let meetHours = getHours(meetTime);
+  let meetMinutes = getMinutes(meetTime);
+  if ((meetHours < fromHours) || (meetHours >= fromHours && meetMinutes < fromMinutes)) {
+    return false;
+  }
+  meetHours += duration / 60;
+  meetMinutes += duration % 60;
+
+  if (meetMinutes >= 60) {
+    meetHours++;
+    meetMinutes -= 60;
+  }
+  return meetHours <= untilHours && meetMinutes <= untilMinutes;
+}
+
+checkMeetingTime('08:00', '14:30', '14:00', 90);
