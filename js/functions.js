@@ -51,3 +51,4 @@ function checkMeetingTime(from, until, meetTime, duration) {
 
 checkMeetingTime('08:00', '14:30', '14:00', 30);
 
+
