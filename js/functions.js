@@ -49,5 +49,5 @@ function checkMeetingTime(from, until, meetTime, duration) {
 }
 
 
-console.log(checkMeetingTime('08:00', '14:30', '14:00', 30));
+checkMeetingTime('08:00', '14:30', '14:00', 30);
 
