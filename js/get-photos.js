@@ -1,6 +1,25 @@
-import { getComments } from './get-comments.js';
-import { DESCRIPTIONS, PHOTOS_COUNT } from './data.js';
+import { DESCRIPTIONS, PHOTOS_COUNT, NAMES, MESSAGES } from './consts.js';
 import { getRandomInt, getUniqueId, getRandomElement } from './utils.js';
+
+
+const getCommentId = getUniqueId(1, 1000);
+
+function createComment() {
+  const commentId = getCommentId();
+  const comment = {
+    id: commentId,
+    avatar: `img/avatar-${getRandomInt(1, 6)}.svg`,
+    message: getRandomElement(MESSAGES),
+    name: getRandomElement(NAMES),
+  };
+
+  return comment;
+}
+
+function getComments() {
+  const comments = Array.from({ length: getRandomInt(0, 30) }, createComment);
+  return comments;
+}
 
 const getPhotoId = getUniqueId(1, 25);
 function createPhoto() {
