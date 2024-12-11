@@ -37,7 +37,8 @@ function renderComments(photoId) {
   return commentFragmentList;
 
 }
-function hidePhotoPopup() {
+function hidePhotoPopup(e) {
+  e.preventDefault();
   hide(bigPhotoPopup);
   document.removeEventListener('keydown', onEscapeKeydown);
   document.body.classList.remove('modal-open');

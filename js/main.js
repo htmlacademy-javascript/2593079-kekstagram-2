@@ -7,6 +7,7 @@ document.addEventListener('click', (e) => {
   const currentPicture = e.target.closest('.picture');
 
   if (currentPicture) {
+    e.preventDefault();
     openBigPhotoPopup(currentPicture.dataset.photoId);
   }
 });
