@@ -1,5 +1,5 @@
-import { getPhotos } from './get-photos';
-import { hide, show } from './utils';
+import { getPhotos } from './get-photos.js';
+import { hide, show } from './utils.js';
 const photos = getPhotos();
 const bigPhotoPopup = document.querySelector('.big-picture');
 const popupCancelElement = document.querySelector('.big-picture__cancel');

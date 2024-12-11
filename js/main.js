@@ -1,5 +1,5 @@
-import { openBigPhotoPopup } from './big-picture-popup.js';
 import { renderPictures } from './render-pictures.js';
+import { openBigPhotoPopup } from './big-picture-popup.js';
 
 renderPictures();
 
