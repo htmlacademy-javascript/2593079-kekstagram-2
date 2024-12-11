@@ -40,6 +40,7 @@ function renderComments(photoId) {
 function hidePhotoPopup() {
   hide(bigPhotoPopup);
   document.removeEventListener('keydown', onEscapeKeydown);
+  document.body.classList.remove('modal-open');
 }
 function showPhotoPopup() {
   document.body.classList.add('modal-open');
