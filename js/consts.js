@@ -36,5 +36,6 @@ const MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают.Как можно было поймать такой неудачный момент ? !',
 ];
 const PHOTOS_COUNT = 25;
+const COMMENTS_STEP = 5;
 
-export { NAMES, DESCRIPTIONS, MESSAGES, PHOTOS_COUNT };
+export { NAMES, DESCRIPTIONS, MESSAGES, PHOTOS_COUNT, COMMENTS_STEP };
