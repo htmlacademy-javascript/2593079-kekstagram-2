@@ -103,7 +103,11 @@ uploadInput.addEventListener('change', () => {
 function showUploadOverlay() {
   show(uploadOverlay);
   document.body.classList.add('modal-open');
-  uploadForm.querySelector('input[name="effect"]:checked').dispatchEvent(new Event('change'));
+  uploadForm.querySelector('input[name="effect"][value="none"]').dispatchEvent(new Event('change', {
+    bubbles: true
+  }));
+  changeImgScale();
+
 }
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
@@ -125,10 +129,12 @@ const sliderContainer = uploadForm.querySelector('.img-upload__effect-level');
 function onSmallerBtnClick(e) {
   e.preventDefault();
   updateScale(false);
+  changeImgScale();
 }
 function onBiggerBtnClick(e) {
   e.preventDefault();
   updateScale(true);
+  changeImgScale();
 }
 function updateScale(isIncreasing) {
   let scaleValue = parseInt(scaleControl.value, 10);
@@ -140,7 +146,11 @@ function updateScale(isIncreasing) {
   scaleValue = Math.max(SCALE.MIN_SCALE, Math.min(SCALE.MAX_SCALE, scaleValue));
 
   scaleControl.value = `${scaleValue}%`;
-  uploadFormPreviewImg.style.transform = `scale(${scaleValue / 100})`;
+}
+
+function changeImgScale() {
+  uploadFormPreviewImg.style.transform = `scale(${parseFloat(scaleControl.value) / 100})`;
+
 }
 uploadForm.querySelector('.scale__control--smaller').addEventListener('click', onSmallerBtnClick);
 uploadForm.querySelector('.scale__control--bigger').addEventListener('click', onBiggerBtnClick);
@@ -192,7 +202,6 @@ effectsSlider.noUiSlider.on('update', () => {
 
 uploadForm.querySelector('.img-upload__effects').addEventListener('change', (e) => {
   const currentEffect = e.target.closest('input[name="effect"]:checked').value;
-  console.log(currentEffect, 'change');
   if (currentEffect) {
     if (currentEffect === 'none') {
       hideEffectsContainer();
