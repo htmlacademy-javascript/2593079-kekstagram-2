@@ -103,6 +103,7 @@ uploadInput.addEventListener('change', () => {
 function showUploadOverlay() {
   show(uploadOverlay);
   document.body.classList.add('modal-open');
+  uploadForm.querySelector('input[name="effect"]:checked').dispatchEvent(new Event('change'));
 }
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
@@ -132,12 +133,10 @@ function onBiggerBtnClick(e) {
 function updateScale(isIncreasing) {
   let scaleValue = parseInt(scaleControl.value, 10);
 
-  // Увеличиваем или уменьшаем масштаб в зависимости от переданного аргумента
   scaleValue = isIncreasing
     ? scaleValue + SCALE.SCALE_STEP
     : scaleValue - SCALE.SCALE_STEP;
 
-  // Ограничиваем значение в пределах допустимого диапазона
   scaleValue = Math.max(SCALE.MIN_SCALE, Math.min(SCALE.MAX_SCALE, scaleValue));
 
   scaleControl.value = `${scaleValue}%`;
@@ -155,11 +154,10 @@ noUiSlider.create(effectsSlider, {
   start: 1,
   format: {
     to: function (value) {
-      if (Number.isInteger(value)) {
-        return value;
-      } else {
+      if (!Number.isInteger(value)) {
         return value.toFixed(1);
       }
+      return value;
     },
     from: function (value) {
       return value;
@@ -193,7 +191,8 @@ effectsSlider.noUiSlider.on('update', () => {
 });
 
 uploadForm.querySelector('.img-upload__effects').addEventListener('change', (e) => {
-  const currentEffect = e.target.closest('input[name="effect"]').value;
+  const currentEffect = e.target.closest('input[name="effect"]:checked').value;
+  console.log(currentEffect, 'change');
   if (currentEffect) {
     if (currentEffect === 'none') {
       hideEffectsContainer();
