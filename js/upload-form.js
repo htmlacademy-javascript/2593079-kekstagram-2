@@ -148,7 +148,11 @@ const setUploadFormSubmit = (onSuccess) => {
     if (pristine.validate()) {
       blockSubmitButton();
       const formData = new FormData(e.target);
-      sendData(formData).then(() => showAlert('success', 'Данные успешно отправлены')).then(onSuccess).catch(() => showAlert('error', 'Ошибка при отправке данных')).finally(activateSubmitButton);
+      sendData(formData)
+        .then(() => {
+          showAlert('success', 'Данные успешно отправлены');
+          onSuccess();
+        }).catch(() => showAlert('error', 'Ошибка при отправке данных')).finally(activateSubmitButton());
     }
   });
 };
