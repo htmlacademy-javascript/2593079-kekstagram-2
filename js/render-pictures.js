@@ -1,7 +1,6 @@
-import { getPhotos } from './get-photos.js';
-const photos = getPhotos();
+import { showElementFromTemplate } from './utils';
 
-function renderPictures() {
+const renderPictures = (photos) => {
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const picturesList = document.querySelector('.pictures');
 
@@ -20,6 +19,11 @@ function renderPictures() {
   });
 
   picturesList.append(picturesListFragment);
-}
+};
 
-export { renderPictures };
+const showDataError = () => {
+  const dataErrorElement = showElementFromTemplate('#data-error', 'Ошибка загрузки данных, обновите страницу');
+  setTimeout(() => dataErrorElement.remove(), 5000);
+
+};
+export { renderPictures, showDataError };

@@ -1,7 +1,5 @@
 import { COMMENTS_STEP } from './consts.js';
-import { getPhotos } from './get-photos.js';
 import { hide, show } from './utils.js';
-const photos = getPhotos();
 const bigPhotoPopup = document.querySelector('.big-picture');
 const popupCancelElement = document.querySelector('.big-picture__cancel');
 const commentsLoadBtn = bigPhotoPopup.querySelector('.comments-loader');
@@ -72,7 +70,7 @@ function showPhotoPopup() {
 
   document.addEventListener('keydown', onEscapeKeydown);
 }
-function openBigPhotoPopup(photoId) {
+function openBigPhotoPopup(photos, photoId) {
   showPhotoPopup();
   const currentPhoto = photos.find((photo) => photo.id === Number(photoId));
   if (currentPhoto) {
