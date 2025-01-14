@@ -12,7 +12,6 @@ const Method = {
 
 const load = (route, method = Method.GET, body = null) => fetch(`${BASE_URL}${route}`, { body, method })
   .then((response) => {
-
     if (!response.ok) {
       throw new Error();
     }
