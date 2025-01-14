@@ -1,14 +1,24 @@
-import { renderPictures } from './render-pictures.js';
 import { openBigPhotoPopup } from './big-picture-popup.js';
-import './upload-form.js';
+import { getData } from './api.js';
+import { closeUploadOverlay, setUploadFormSubmit } from './upload-form.js';
+import { renderPictures, showDataError } from './render-pictures.js';
 
-renderPictures();
+let pictures;
 
-document.addEventListener('click', (e) => {
-  const currentPicture = e.target.closest('.picture');
+getData().then((photos) => {
+  pictures = photos;
+  renderPictures(pictures);
+})
+  .catch(showDataError);
+
+document.addEventListener('click', (evt) => {
+  const currentPicture = evt.target.closest('.picture');
 
   if (currentPicture) {
-    e.preventDefault();
-    openBigPhotoPopup(currentPicture.dataset.photoId);
+    evt.preventDefault();
+    openBigPhotoPopup(pictures, currentPicture.dataset.photoId);
   }
+
 });
+
+setUploadFormSubmit(closeUploadOverlay);

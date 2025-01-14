@@ -1,7 +1,5 @@
 import { COMMENTS_STEP } from './consts.js';
-import { getPhotos } from './get-photos.js';
 import { hide, show } from './utils.js';
-const photos = getPhotos();
 const bigPhotoPopup = document.querySelector('.big-picture');
 const popupCancelElement = document.querySelector('.big-picture__cancel');
 const commentsLoadBtn = bigPhotoPopup.querySelector('.comments-loader');
@@ -9,14 +7,14 @@ const commentsLoadBtn = bigPhotoPopup.querySelector('.comments-loader');
 let currentComments = null;
 let currentShownCommentsCount = 0;
 
-function onEscapeKeydown(e) {
-  if (e.key === 'Escape') {
-    hidePhotoPopup(e);
+function onEscapeKeydown(evt) {
+  if (evt.key === 'Escape') {
+    hidePhotoPopup(evt);
   }
 }
 
-function onLoadBtnClick(e) {
-  e.preventDefault();
+function onLoadBtnClick(evt) {
+  evt.preventDefault();
   loadComments();
 }
 
@@ -58,8 +56,8 @@ function renderComments(comments) {
   currentComments = comments;
   loadComments();
 }
-function hidePhotoPopup(e) {
-  e.preventDefault();
+function hidePhotoPopup(evt) {
+  evt.preventDefault();
   clearComments();
   hide(bigPhotoPopup);
   document.removeEventListener('keydown', onEscapeKeydown);
@@ -72,7 +70,7 @@ function showPhotoPopup() {
 
   document.addEventListener('keydown', onEscapeKeydown);
 }
-function openBigPhotoPopup(photoId) {
+function openBigPhotoPopup(photos, photoId) {
   showPhotoPopup();
   const currentPhoto = photos.find((photo) => photo.id === Number(photoId));
   if (currentPhoto) {
