@@ -10,7 +10,7 @@ document.addEventListener('click', (e) => {
 
   if (currentPicture) {
     e.preventDefault();
-    getPictures().then((photos) => openBigPhotoPopup(photos, currentPicture.dataset.photoId));
+    getPictures().then((photos) => openBigPhotoPopup(photos, currentPicture.dataset.photoId), showDataError);
   }
 });
 
