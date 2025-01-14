@@ -43,7 +43,7 @@ const getUniqueId = (min, max) => {
   };
 };
 
-const isEscapeKey = (e) => e.key === 'Escape';
+const isEscapeKey = (evt) => evt.key === 'Escape';
 const getRandomElement = (elements) => elements[getRandomInt(0, elements.length - 1)];
 const showElementFromTemplate = (selector, message) => {
   const dataElement = document.querySelector(selector).content.querySelector(`.${selector.slice(1)}`).cloneNode(true);
