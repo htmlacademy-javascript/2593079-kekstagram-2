@@ -1,5 +1,5 @@
 import { show, hide, showElementFromTemplate, isEscapeKey, blockSubmitButton, activateSubmitButton } from './utils.js';
-import { Scale, Filters } from './consts.js';
+import { Scale, Filters, AlertType } from './consts.js';
 import { sendData } from './api.js';
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
@@ -81,16 +81,18 @@ pristine.addValidator(descriptionInput, (value) => {
   }
   return true;
 }, 'Максимальная длина комментария 140 символов');
+
+const getAlertElement = () => Object.values(AlertType).map((value) => document.querySelector(`.${value}`)).find((elem) => elem);
 function onUploadOverlayKeydown(e) {
-  const currentAlert = document.querySelector('.error') ?? document.querySelector('.success');
-  if (isEscapeKey(e) && !currentAlert) {
+  if (isEscapeKey(e) && getAlertElement()) {
+    closeAlertElement();
+  } else if (isEscapeKey(e) && !getAlertElement()) {
     closeUploadOverlay(e);
   }
 }
 
 function closeUploadOverlay() {
   document.removeEventListener('keydown', onUploadOverlayKeydown);
-
   hide(uploadOverlay);
   document.body.classList.remove('modal-open');
   uploadForm.reset();
@@ -113,20 +115,12 @@ uploadInput.addEventListener('change', () => {
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
 
-const closeAlertElement = () => {
-  const currentElement = document.querySelector('.error') ?? document.querySelector('.success');
-  currentElement.remove();
-  document.removeEventListener('keydown', onAlertKeydown);
-  document.removeEventListener('click', onDocumentClick);
-};
-function onAlertKeydown(e) {
-  if (isEscapeKey(e)) {
-    closeAlertElement();
-  }
+function closeAlertElement() {
+  getAlertElement().remove();
 }
 
-function onDocumentClick(e) {
-  const currentElement = e.target.closest('.error__inner') ?? e.target.closest('.success__inner');
+function onAlertClick(e) {
+  const currentElement = e.target.closest('[class*="__inner"]');
   if (!currentElement) {
     closeAlertElement();
   }
@@ -138,8 +132,7 @@ function showAlert(type, message) {
     closeAlertElement();
   });
 
-  document.addEventListener('keydown', onAlertKeydown);
-  document.addEventListener('click', onDocumentClick);
+  alertElement.addEventListener('click', onAlertClick);
 }
 
 const setUploadFormSubmit = (onSuccess) => {
