@@ -84,9 +84,7 @@ pristine.addValidator(descriptionInput, (value) => {
 
 const getAlertElement = () => Object.values(AlertType).map((value) => document.querySelector(`.${value}`)).find((elem) => elem);
 function onUploadOverlayKeydown(e) {
-  if (isEscapeKey(e) && getAlertElement()) {
-    closeAlertElement();
-  } else if (isEscapeKey(e) && !getAlertElement()) {
+  if (isEscapeKey(e) && !getAlertElement()) {
     closeUploadOverlay(e);
   }
 }
@@ -114,9 +112,15 @@ uploadInput.addEventListener('change', () => {
 });
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
-
+function onAlertKeydown(e) {
+  if (isEscapeKey(e)) {
+    //onAlertKeydown срабатывает раньше onUploadOverlayKeydown, поэтому при нажатии escape закрывается и форма и сообщение об ошибке
+    setTimeout(closeAlertElement, 0);
+  }
+}
 function closeAlertElement() {
-  getAlertElement().remove();
+  getAlertElement()?.remove();
+  document.body.removeEventListener('keydown', onAlertKeydown);
 }
 
 function onAlertClick(e) {
@@ -133,6 +137,7 @@ function showAlert(type, message) {
   });
 
   alertElement.addEventListener('click', onAlertClick);
+  document.body.addEventListener('keydown', onAlertKeydown);
 }
 
 const setUploadFormSubmit = (onSuccess) => {
