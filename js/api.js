@@ -12,6 +12,7 @@ const Method = {
 
 const load = (route, method = Method.GET, body = null) => fetch(`${BASE_URL}${route}`, { body, method })
   .then((response) => {
+
     if (!response.ok) {
       throw new Error();
     }
@@ -20,7 +21,7 @@ const load = (route, method = Method.GET, body = null) => fetch(`${BASE_URL}${ro
     throw new Error('Ошибка при отправке/получении данных');
   });
 
-const getData = () => load(`${BASE_URL}${Route.GET_DATA}`).then((response) => response.json());
+const getData = () => load(Route.GET_DATA);
 
 const sendData = (body) => load(Route.SEND_DATA, Method.POST, body);
 
