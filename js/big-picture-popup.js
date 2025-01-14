@@ -7,14 +7,14 @@ const commentsLoadBtn = bigPhotoPopup.querySelector('.comments-loader');
 let currentComments = null;
 let currentShownCommentsCount = 0;
 
-function onEscapeKeydown(e) {
-  if (e.key === 'Escape') {
-    hidePhotoPopup(e);
+function onEscapeKeydown(evt) {
+  if (evt.key === 'Escape') {
+    hidePhotoPopup(evt);
   }
 }
 
-function onLoadBtnClick(e) {
-  e.preventDefault();
+function onLoadBtnClick(evt) {
+  evt.preventDefault();
   loadComments();
 }
 
@@ -56,8 +56,8 @@ function renderComments(comments) {
   currentComments = comments;
   loadComments();
 }
-function hidePhotoPopup(e) {
-  e.preventDefault();
+function hidePhotoPopup(evt) {
+  evt.preventDefault();
   clearComments();
   hide(bigPhotoPopup);
   document.removeEventListener('keydown', onEscapeKeydown);

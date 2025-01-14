@@ -1,6 +1,7 @@
 import { show, hide, showElementFromTemplate, isEscapeKey, blockSubmitButton, activateSubmitButton } from './utils.js';
-import { Scale, Filters, AlertType } from './consts.js';
+import { AlertType } from './consts.js';
 import { sendData } from './api.js';
+import { changeImgScale } from './filters.js';
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
@@ -62,15 +63,15 @@ pristine.addValidator(hashtagsInput, (value) => {
   return true;
 }, HASHTAGS_ERRORS.invalidHashtag);
 
-hashtagsInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    e.stopPropagation();
+hashtagsInput.addEventListener('keydown', (evt) => {
+  if (evt.key === 'Escape') {
+    evt.stopPropagation();
   }
 });
 
-descriptionInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    e.stopPropagation();
+descriptionInput.addEventListener('keydown', (evt) => {
+  if (evt.key === 'Escape') {
+    evt.stopPropagation();
   }
 });
 pristine.addValidator(descriptionInput, (value) => {
@@ -83,9 +84,9 @@ pristine.addValidator(descriptionInput, (value) => {
 }, 'Максимальная длина комментария 140 символов');
 
 const getAlertElement = () => Object.values(AlertType).map((value) => document.querySelector(`.${value}`)).find((elem) => elem);
-function onUploadOverlayKeydown(e) {
-  if (isEscapeKey(e) && !getAlertElement()) {
-    closeUploadOverlay(e);
+function onUploadOverlayKeydown(evt) {
+  if (isEscapeKey(evt) && !getAlertElement()) {
+    closeUploadOverlay(evt);
   }
 }
 
@@ -112,19 +113,18 @@ uploadInput.addEventListener('change', () => {
 });
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
-function onAlertKeydown(e) {
-  if (isEscapeKey(e)) {
-    //onAlertKeydown срабатывает раньше onUploadOverlayKeydown, поэтому при нажатии escape закрывается и форма и сообщение об ошибке
-    setTimeout(closeAlertElement, 0);
+function onAlertKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    closeAlertElement();
   }
 }
 function closeAlertElement() {
   getAlertElement()?.remove();
-  document.body.removeEventListener('keydown', onAlertKeydown);
+  document.removeEventListener('keydown', onAlertKeydown);
 }
 
-function onAlertClick(e) {
-  const currentElement = e.target.closest('[class*="__inner"]');
+function onAlertClick(evt) {
+  const currentElement = evt.target.closest('[class*="__inner"]');
   if (!currentElement) {
     closeAlertElement();
   }
@@ -137,15 +137,15 @@ function showAlert(type, message) {
   });
 
   alertElement.addEventListener('click', onAlertClick);
-  document.body.addEventListener('keydown', onAlertKeydown);
+  document.addEventListener('keydown', onAlertKeydown);
 }
 
 const setUploadFormSubmit = (onSuccess) => {
-  uploadForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  uploadForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
     if (pristine.validate()) {
       blockSubmitButton();
-      const formData = new FormData(e.target);
+      const formData = new FormData(evt.target);
       sendData(formData)
         .then(() => {
           showAlert('success', 'Данные успешно отправлены');
@@ -154,101 +154,7 @@ const setUploadFormSubmit = (onSuccess) => {
     }
   });
 };
-
 //FILTERS FUNCTIONALITY
-const uploadFormPreviewImg = uploadForm.querySelector('.img-upload__preview');
-const scaleControl = uploadForm.querySelector('.scale__control--value');
-const effectsSlider = uploadForm.querySelector('.effect-level__slider');
-const effectsValue = uploadForm.querySelector('.effect-level__value');
-const sliderContainer = uploadForm.querySelector('.img-upload__effect-level');
 
-function onSmallerBtnClick(e) {
-  e.preventDefault();
-  updateScale(false);
-  changeImgScale();
-}
-function onBiggerBtnClick(e) {
-  e.preventDefault();
-  updateScale(true);
-  changeImgScale();
-}
-function updateScale(isIncreasing) {
-  let scaleValue = parseInt(scaleControl.value, 10);
-
-  scaleValue = isIncreasing
-    ? scaleValue + Scale.SCALE_STEP
-    : scaleValue - Scale.SCALE_STEP;
-
-  scaleValue = Math.max(Scale.MIN_SCALE, Math.min(Scale.MAX_SCALE, scaleValue));
-
-  scaleControl.value = `${scaleValue}%`;
-}
-
-function changeImgScale() {
-  uploadFormPreviewImg.style.transform = `scale(${parseFloat(scaleControl.value) / 100})`;
-
-}
-uploadForm.querySelector('.scale__control--smaller').addEventListener('click', onSmallerBtnClick);
-uploadForm.querySelector('.scale__control--bigger').addEventListener('click', onBiggerBtnClick);
-
-noUiSlider.create(effectsSlider, {
-  range: {
-    max: 1,
-    min: 0,
-  },
-  step: 0.1,
-  start: 1,
-  format: {
-    to: function (value) {
-      if (!Number.isInteger(value)) {
-        return value.toFixed(1);
-      }
-      return value;
-    },
-    from: function (value) {
-      return value;
-    }
-  }
-});
-
-function updateEffectsSlider(effect) {
-  effectsSlider.noUiSlider.updateOptions({
-    range: {
-      max: Filters[effect].MAX_VALUE,
-      min: Filters[effect].MIN_VALUE,
-    },
-    step: Filters[effect].STEP,
-    start: Filters[effect].MAX_VALUE,
-  });
-}
-
-function hideEffectsContainer() {
-  hide(sliderContainer);
-  effectsValue.value = 0;
-  uploadFormPreviewImg.style.filter = 'none';
-}
-
-effectsSlider.noUiSlider.on('update', () => {
-  effectsValue.value = effectsSlider.noUiSlider.get();
-  const currentEffect = uploadForm.querySelector('input[name="effect"]:checked').value;
-  if (!(currentEffect === 'none')) {
-    uploadFormPreviewImg.style.filter = `${Filters[currentEffect].EFFECT}(${effectsValue.value + Filters[currentEffect].UNIT_OF_MEASUREMENT}`;
-  }
-});
-
-uploadForm.querySelector('.img-upload__effects').addEventListener('change', (e) => {
-  const currentEffect = e.target.closest('input[name="effect"]:checked').value;
-  if (currentEffect) {
-    if (currentEffect === 'none') {
-      hideEffectsContainer();
-    } else {
-      show(sliderContainer);
-      updateEffectsSlider(currentEffect);
-      uploadFormPreviewImg.style.filter = `${Filters[currentEffect].EFFECT}(${effectsValue.value + Filters[currentEffect].UNIT_OF_MEASUREMENT}`;
-    }
-  }
-});
-
-hideEffectsContainer();
 
 export { setUploadFormSubmit, closeUploadOverlay };
