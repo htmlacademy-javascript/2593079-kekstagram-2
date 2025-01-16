@@ -1,100 +1,51 @@
-import { Filters, Scale } from './consts';
-import { hide, show } from './utils';
+import { renderPictures } from './render-pictures.js';
+import { debounce, shuffleArray } from './utils.js';
+const ACTIVE_BUTTON_CLASS = 'img-filters__button--active';
+const SHOWN_RANDOM_PHOTOS_COUNT = 10;
+const DEBOUNCE_DELAY = 500;
 
-const uploadForm = document.querySelector('#upload-select-image');
-const uploadFormPreviewImg = uploadForm.querySelector('.img-upload__preview');
-const scaleControl = uploadForm.querySelector('.scale__control--value');
-const effectsSlider = uploadForm.querySelector('.effect-level__slider');
-const effectsValue = uploadForm.querySelector('.effect-level__value');
-const sliderContainer = uploadForm.querySelector('.img-upload__effect-level');
+let loadedPhotos;
+const filterInput = document.querySelector('.img-filters');
 
-function onSmallerBtnClick(evt) {
+
+const applyFilter = (filterName) => {
+  let filteredPhotos = loadedPhotos.slice();
+  switch (filterName) {
+    case 'filter-random':
+      filteredPhotos = shuffleArray(filteredPhotos).slice(0, SHOWN_RANDOM_PHOTOS_COUNT);
+      break;
+
+    case 'filter-discussed':
+      filteredPhotos = filteredPhotos.sort((a, b) => b.comments.length - a.comments.length);
+      break;
+  }
+  renderPictures(filteredPhotos);
+};
+
+const debouncedApplyFilter = debounce(applyFilter, DEBOUNCE_DELAY);
+
+
+const onFilterCLick = (evt) => {
   evt.preventDefault();
-  updateScale(false);
-  changeImgScale();
-}
-function onBiggerBtnClick(evt) {
-  evt.preventDefault();
-  updateScale(true);
-  changeImgScale();
-}
-function updateScale(isIncreasing) {
-  let scaleValue = parseInt(scaleControl.value, 10);
 
-  scaleValue = isIncreasing
-    ? scaleValue + Scale.SCALE_STEP
-    : scaleValue - Scale.SCALE_STEP;
+  const currentTarget = evt.target;
 
-  scaleValue = Math.max(Scale.MIN_SCALE, Math.min(Scale.MAX_SCALE, scaleValue));
+  const currentActiveButton = filterInput.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
 
-  scaleControl.value = `${scaleValue}%`;
-}
-
-function changeImgScale() {
-  uploadFormPreviewImg.style.transform = `scale(${parseFloat(scaleControl.value) / 100})`;
-
-}
-uploadForm.querySelector('.scale__control--smaller').addEventListener('click', onSmallerBtnClick);
-uploadForm.querySelector('.scale__control--bigger').addEventListener('click', onBiggerBtnClick);
-
-noUiSlider.create(effectsSlider, {
-  range: {
-    max: 1,
-    min: 0,
-  },
-  step: 0.1,
-  start: 1,
-  format: {
-    to: function (value) {
-      if (!Number.isInteger(value)) {
-        return value.toFixed(1);
-      }
-      return value;
-    },
-    from: function (value) {
-      return value;
-    }
+  if (!currentTarget.classList.contains('img-filters__button')) {
+    return;
   }
-});
+  currentActiveButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+  currentTarget.classList.toggle(ACTIVE_BUTTON_CLASS);
 
-function updateEffectsSlider(effect) {
-  effectsSlider.noUiSlider.updateOptions({
-    range: {
-      max: Filters[effect].MAX_VALUE,
-      min: Filters[effect].MIN_VALUE,
-    },
-    step: Filters[effect].STEP,
-    start: Filters[effect].MAX_VALUE,
-  });
-}
+  debouncedApplyFilter(currentTarget.id);
+};
 
-function hideEffectsContainer() {
-  hide(sliderContainer);
-  effectsValue.value = 0;
-  uploadFormPreviewImg.style.filter = 'none';
-}
 
-effectsSlider.noUiSlider.on('update', () => {
-  effectsValue.value = effectsSlider.noUiSlider.get();
-  const currentEffect = uploadForm.querySelector('input[name="effect"]:checked').value;
-  if (!(currentEffect === 'none')) {
-    uploadFormPreviewImg.style.filter = `${Filters[currentEffect].EFFECT}(${effectsValue.value + Filters[currentEffect].UNIT_OF_MEASUREMENT}`;
-  }
-});
+const setFilter = (photos) => {
+  loadedPhotos = photos;
+  filterInput.classList.remove('img-filters--inactive');
+  filterInput.addEventListener('click', onFilterCLick);
+};
 
-uploadForm.querySelector('.img-upload__effects').addEventListener('change', (evt) => {
-  const currentEffect = evt.target.closest('input[name="effect"]:checked').value;
-  if (currentEffect) {
-    if (currentEffect === 'none') {
-      hideEffectsContainer();
-    } else {
-      show(sliderContainer);
-      updateEffectsSlider(currentEffect);
-      uploadFormPreviewImg.style.filter = `${Filters[currentEffect].EFFECT}(${effectsValue.value + Filters[currentEffect].UNIT_OF_MEASUREMENT}`;
-    }
-  }
-});
-
-hideEffectsContainer();
-
-export { changeImgScale };
+export { setFilter };

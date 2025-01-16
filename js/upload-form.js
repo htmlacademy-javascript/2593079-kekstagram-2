@@ -1,7 +1,7 @@
 import { show, hide, showElementFromTemplate, isEscapeKey, blockSubmitButton, activateSubmitButton } from './utils.js';
 import { AlertType } from './consts.js';
 import { sendData } from './api.js';
-import { changeImgScale } from './filters.js';
+import { changeImgScale } from './effects.js';
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
@@ -56,7 +56,7 @@ pristine.addValidator(hashtagsInput, (value) => {
     const hashtags = parseHashtags(value);
 
     return hashtags.every((hashtag) => {
-      const hashRegExp = /^#[a-zа-яё0-9]{1,19}$/i;
+      const hashRegExp = /^#[a-zA-Zа-яА-Яё0-9]{1,19}$/i;
       return hashRegExp.test(hashtag);
     });
   }
@@ -155,7 +155,5 @@ const setUploadFormSubmit = (onSuccess) => {
     }
   });
 };
-//FILTERS FUNCTIONALITY
-
 
 export { setUploadFormSubmit, closeUploadOverlay };

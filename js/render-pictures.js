@@ -1,5 +1,8 @@
 import { showElementFromTemplate } from './utils';
-
+const SHOW_DATA_ERROR_TIME = 5000;
+const clearPhotos = () => {
+  document.querySelectorAll('.pictures .picture')?.forEach((picture) => picture.remove());
+};
 const renderPictures = (photos) => {
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
   const picturesList = document.querySelector('.pictures');
@@ -17,13 +20,13 @@ const renderPictures = (photos) => {
 
     picturesListFragment.append(photoElement);
   });
-
+  clearPhotos();
   picturesList.append(picturesListFragment);
 };
 
 const showDataError = () => {
   const dataErrorElement = showElementFromTemplate('#data-error', 'Ошибка загрузки данных, обновите страницу');
-  setTimeout(() => dataErrorElement.remove(), 5000);
+  setTimeout(() => dataErrorElement.remove(), SHOW_DATA_ERROR_TIME);
 
 };
 export { renderPictures, showDataError };
