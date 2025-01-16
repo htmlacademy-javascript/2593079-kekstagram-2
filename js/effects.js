@@ -1,5 +1,5 @@
-import { Filters, Scale } from './consts';
-import { hide, show } from './utils';
+import { Filters, Scale } from './consts.js';
+import { hide, show } from './utils.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadFormPreviewImg = uploadForm.querySelector('.img-upload__preview');

@@ -1,4 +1,4 @@
-import { showElementFromTemplate } from './utils';
+import { showElementFromTemplate } from './utils.js';
 const SHOW_DATA_ERROR_TIME = 5000;
 const clearPhotos = () => {
   document.querySelectorAll('.pictures .picture')?.forEach((picture) => picture.remove());
