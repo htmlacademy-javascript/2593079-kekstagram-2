@@ -20,15 +20,16 @@ const HASHTAGS_MAX_COUNT = 5;
 const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 
 function parseHashtags(hashtags) {
-  return hashtags.trim().split(' ').map((hashtag) => hashtag.toLowerCase());
+  return hashtags.split(' ').filter(Boolean).map((hashtag) => hashtag.toLowerCase());
 }
 
 const pristine = new Pristine(uploadForm, {
-  classTo: 'img-upload__form',
+  classTo: 'img-upload__field-wrapper',
   succesClass: 'has-success',
   errorClass: '--error',
   errorTextParent: 'img-upload__field-wrapper',
-  errorTextClass: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
+  errorTextClass: 'img-upload__error-text',
 
 }, true);
 
@@ -98,11 +99,13 @@ function closeUploadOverlay() {
   hide(uploadOverlay);
   document.body.classList.remove('modal-open');
   uploadForm.reset();
+  pristine.reset();
   changeImgScale();
 
   uploadForm.querySelector('input[name="effect"][value="none"]').dispatchEvent(new Event('change', {
     bubbles: true
   }));
+
 }
 
 const showUploadOverlay = () => {
