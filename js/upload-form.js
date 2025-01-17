@@ -1,31 +1,35 @@
 import { show, hide, showElementFromTemplate, isEscapeKey, blockSubmitButton, activateSubmitButton } from './utils.js';
 import { AlertType } from './consts.js';
 import { sendData } from './api.js';
-import { changeImgScale } from './filters.js';
+import { changeImgScale } from './effects.js';
+import { showDataError } from './render-pictures.js';
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
 const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const descriptionInput = uploadForm.querySelector('.text__description');
 const uploadFormCancelElem = uploadForm.querySelector('.img-upload__cancel');
+const uploadFormPreview = uploadForm.querySelector('.img-upload__preview img');
 const HASHTAGS_ERRORS = {
   maxCount: 'Максимум 5 хэштегов',
   invalidHashtag: 'Хэштег начинается с символа # и состоит только из букв и цифр и не превышает длину 20 символов',
   repeatedHashtags: 'Хэштеги не должны повторяться'
 };
+const FYLES_TYPES = ['png', 'jpeg', 'jpg'];
 const HASHTAGS_MAX_COUNT = 5;
 const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 
 function parseHashtags(hashtags) {
-  return hashtags.trim().split(' ').map((hashtag) => hashtag.toLowerCase());
+  return hashtags.split(' ').filter(Boolean).map((hashtag) => hashtag.toLowerCase());
 }
 
 const pristine = new Pristine(uploadForm, {
-  classTo: 'img-upload__form',
+  classTo: 'img-upload__field-wrapper',
   succesClass: 'has-success',
   errorClass: '--error',
   errorTextParent: 'img-upload__field-wrapper',
-  errorTextClass: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
+  errorTextClass: 'img-upload__error-text',
 
 }, true);
 
@@ -56,7 +60,7 @@ pristine.addValidator(hashtagsInput, (value) => {
     const hashtags = parseHashtags(value);
 
     return hashtags.every((hashtag) => {
-      const hashRegExp = /^#[a-zа-яё0-9]{1,19}$/i;
+      const hashRegExp = /^#[a-zA-Zа-яА-Яё0-9]{1,19}$/i;
       return hashRegExp.test(hashtag);
     });
   }
@@ -95,11 +99,13 @@ function closeUploadOverlay() {
   hide(uploadOverlay);
   document.body.classList.remove('modal-open');
   uploadForm.reset();
+  pristine.reset();
   changeImgScale();
 
   uploadForm.querySelector('input[name="effect"][value="none"]').dispatchEvent(new Event('change', {
     bubbles: true
   }));
+
 }
 
 const showUploadOverlay = () => {
@@ -108,8 +114,17 @@ const showUploadOverlay = () => {
 };
 
 uploadInput.addEventListener('change', () => {
-  showUploadOverlay();
-  document.addEventListener('keydown', onUploadOverlayKeydown);
+  const file = uploadInput.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FYLES_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    uploadFormPreview.src = URL.createObjectURL(file);
+    showUploadOverlay();
+    document.addEventListener('keydown', onUploadOverlayKeydown);
+  } else {
+    showDataError('Неправильный формат картинки');
+  }
 });
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
@@ -155,7 +170,5 @@ const setUploadFormSubmit = (onSuccess) => {
     }
   });
 };
-//FILTERS FUNCTIONALITY
-
 
 export { setUploadFormSubmit, closeUploadOverlay };

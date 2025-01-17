@@ -17,6 +17,9 @@ const show = (elem) => {
   elem.classList.remove('hidden');
 };
 
+const shuffleArray = (arr) => arr.slice().sort(() => 0.5 - Math.random());
+
+
 const blockSubmitButton = () => {
   submitButton.disabled = true;
   submitButton.textContent = SubmitButtonValue.PENDING;
@@ -43,6 +46,15 @@ const getUniqueId = (min, max) => {
   };
 };
 
+const debounce = (cb, debounceDelay) => {
+  let timerId;
+
+  return function (...rest) {
+    clearTimeout(timerId);
+    timerId = setTimeout(() => cb.apply(this, rest), debounceDelay);
+  };
+};
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 const getRandomElement = (elements) => elements[getRandomInt(0, elements.length - 1)];
 const showElementFromTemplate = (selector, message) => {
@@ -52,4 +64,4 @@ const showElementFromTemplate = (selector, message) => {
   return dataElement;
 };
 
-export { getRandomInt, getUniqueId, getRandomElement, hide, show, showElementFromTemplate, isEscapeKey, blockSubmitButton, activateSubmitButton };
+export { getRandomInt, getUniqueId, getRandomElement, hide, show, showElementFromTemplate, isEscapeKey, blockSubmitButton, activateSubmitButton, shuffleArray, debounce };
