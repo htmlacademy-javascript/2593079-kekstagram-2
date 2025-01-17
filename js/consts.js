@@ -1,4 +1,4 @@
-const Filters = {
+const FiltersList = {
   chrome: {
     MIN_VALUE: 0,
     MAX_VALUE: 1,
@@ -54,6 +54,6 @@ const PHOTOS_COUNT = 25;
 const COMMENTS_STEP = 5;
 
 
-export { PHOTOS_COUNT, COMMENTS_STEP, Filters, Scale, AlertType };
+export { PHOTOS_COUNT, COMMENTS_STEP, FiltersList, Scale, AlertType };
 
 

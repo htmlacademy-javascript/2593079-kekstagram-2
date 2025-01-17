@@ -15,7 +15,7 @@ const HASHTAGS_ERRORS = {
   invalidHashtag: 'Хэштег начинается с символа # и состоит только из букв и цифр и не превышает длину 20 символов',
   repeatedHashtags: 'Хэштеги не должны повторяться'
 };
-const FYLES_TYPES = ['png', 'jpeg', 'jpg'];
+const FYLES_TYPE_LIST = ['png', 'jpeg', 'jpg'];
 const HASHTAGS_MAX_COUNT = 5;
 const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 
@@ -124,7 +124,7 @@ uploadInput.addEventListener('change', () => {
   const file = uploadInput.files[0];
   const fileName = file.name.toLowerCase();
 
-  const matches = FYLES_TYPES.some((it) => fileName.endsWith(it));
+  const matches = FYLES_TYPE_LIST.some((it) => fileName.endsWith(it));
   if (matches) {
     const previewSrc = URL.createObjectURL(file);
     showUploadOverlay();
