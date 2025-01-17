@@ -2,7 +2,7 @@ import { Filters, Scale } from './consts.js';
 import { hide, show } from './utils.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
-const uploadFormPreviewImg = uploadForm.querySelector('.img-upload__preview');
+const uploadFormPreviewImg = uploadForm.querySelector('.img-upload__preview img');
 const scaleControl = uploadForm.querySelector('.scale__control--value');
 const effectsSlider = uploadForm.querySelector('.effect-level__slider');
 const effectsValue = uploadForm.querySelector('.effect-level__value');
