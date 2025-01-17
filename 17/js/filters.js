@@ -27,7 +27,6 @@ const debouncedApplyFilter = debounce(applyFilter, DEBOUNCE_DELAY);
 
 const onFilterCLick = (evt) => {
   evt.preventDefault();
-
   const currentTarget = evt.target;
 
   const currentActiveButton = filterInput.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
