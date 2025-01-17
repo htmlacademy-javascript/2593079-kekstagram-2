@@ -24,8 +24,8 @@ const renderPictures = (photos) => {
   picturesList.append(picturesListFragment);
 };
 
-const showDataError = () => {
-  const dataErrorElement = showElementFromTemplate('#data-error', 'Ошибка загрузки данных, обновите страницу');
+const showDataError = (errorText = 'Ошибка загрузки данных, обновите страницу') => {
+  const dataErrorElement = showElementFromTemplate('#data-error', errorText);
   setTimeout(() => dataErrorElement.remove(), SHOW_DATA_ERROR_TIME);
 
 };

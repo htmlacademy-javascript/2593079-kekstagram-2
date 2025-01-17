@@ -2,17 +2,20 @@ import { show, hide, showElementFromTemplate, isEscapeKey, blockSubmitButton, ac
 import { AlertType } from './consts.js';
 import { sendData } from './api.js';
 import { changeImgScale } from './effects.js';
+import { showDataError } from './render-pictures.js';
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
 const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const descriptionInput = uploadForm.querySelector('.text__description');
 const uploadFormCancelElem = uploadForm.querySelector('.img-upload__cancel');
+const uploadFormPreview = uploadForm.querySelector('.img-upload__preview img');
 const HASHTAGS_ERRORS = {
   maxCount: 'Максимум 5 хэштегов',
   invalidHashtag: 'Хэштег начинается с символа # и состоит только из букв и цифр и не превышает длину 20 символов',
   repeatedHashtags: 'Хэштеги не должны повторяться'
 };
+const FYLES_TYPES = ['png', 'jpeg', 'jpg'];
 const HASHTAGS_MAX_COUNT = 5;
 const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 
@@ -108,8 +111,17 @@ const showUploadOverlay = () => {
 };
 
 uploadInput.addEventListener('change', () => {
-  showUploadOverlay();
-  document.addEventListener('keydown', onUploadOverlayKeydown);
+  const file = uploadInput.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FYLES_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    uploadFormPreview.src = URL.createObjectURL(file);
+    showUploadOverlay();
+    document.addEventListener('keydown', onUploadOverlayKeydown);
+  } else {
+    showDataError('Неправильный формат картинки');
+  }
 });
 
 uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
