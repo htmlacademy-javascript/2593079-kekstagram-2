@@ -108,6 +108,13 @@ function closeUploadOverlay() {
 
 }
 
+const setPreview = (src) => {
+  uploadFormPreview.src = src;
+  Array.from(document.querySelectorAll('.effects__preview')).forEach((el) => {
+    el.style.backgroundImage = `url(${src})`;
+  });
+};
+
 const showUploadOverlay = () => {
   show(uploadOverlay);
   document.body.classList.add('modal-open');
@@ -119,8 +126,9 @@ uploadInput.addEventListener('change', () => {
 
   const matches = FYLES_TYPES.some((it) => fileName.endsWith(it));
   if (matches) {
-    uploadFormPreview.src = URL.createObjectURL(file);
+    const previewSrc = URL.createObjectURL(file);
     showUploadOverlay();
+    setPreview(previewSrc);
     document.addEventListener('keydown', onUploadOverlayKeydown);
   } else {
     showDataError('Неправильный формат картинки');
