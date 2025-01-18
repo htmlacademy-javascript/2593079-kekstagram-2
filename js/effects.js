@@ -1,4 +1,4 @@
-import { Filters, Scale } from './consts.js';
+import { FiltersList, Scale } from './consts.js';
 import { hide, show } from './utils.js';
 
 const uploadForm = document.querySelector('#upload-select-image');
@@ -60,11 +60,11 @@ noUiSlider.create(effectsSlider, {
 function updateEffectsSlider(effect) {
   effectsSlider.noUiSlider.updateOptions({
     range: {
-      max: Filters[effect].MAX_VALUE,
-      min: Filters[effect].MIN_VALUE,
+      max: FiltersList[effect].MAX_VALUE,
+      min: FiltersList[effect].MIN_VALUE,
     },
-    step: Filters[effect].STEP,
-    start: Filters[effect].MAX_VALUE,
+    step: FiltersList[effect].STEP,
+    start: FiltersList[effect].MAX_VALUE,
   });
 }
 
@@ -78,7 +78,7 @@ effectsSlider.noUiSlider.on('update', () => {
   effectsValue.value = effectsSlider.noUiSlider.get();
   const currentEffect = uploadForm.querySelector('input[name="effect"]:checked').value;
   if (!(currentEffect === 'none')) {
-    uploadFormPreviewImg.style.filter = `${Filters[currentEffect].EFFECT}(${effectsValue.value + Filters[currentEffect].UNIT_OF_MEASUREMENT}`;
+    uploadFormPreviewImg.style.filter = `${FiltersList[currentEffect].EFFECT}(${effectsValue.value + FiltersList[currentEffect].UNIT_OF_MEASUREMENT}`;
   }
 });
 
@@ -90,7 +90,7 @@ uploadForm.querySelector('.img-upload__effects').addEventListener('change', (evt
     } else {
       show(sliderContainer);
       updateEffectsSlider(currentEffect);
-      uploadFormPreviewImg.style.filter = `${Filters[currentEffect].EFFECT}(${effectsValue.value + Filters[currentEffect].UNIT_OF_MEASUREMENT}`;
+      uploadFormPreviewImg.style.filter = `${FiltersList[currentEffect].EFFECT}(${effectsValue.value + FiltersList[currentEffect].UNIT_OF_MEASUREMENT}`;
     }
   }
 });

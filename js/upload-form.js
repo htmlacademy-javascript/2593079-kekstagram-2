@@ -15,7 +15,7 @@ const HASHTAGS_ERRORS = {
   invalidHashtag: 'Хэштег начинается с символа # и состоит только из букв и цифр и не превышает длину 20 символов',
   repeatedHashtags: 'Хэштеги не должны повторяться'
 };
-const FYLES_TYPES = ['png', 'jpeg', 'jpg'];
+const FYLES_TYPE_LIST = ['png', 'jpeg', 'jpg'];
 const HASHTAGS_MAX_COUNT = 5;
 const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 
@@ -108,6 +108,13 @@ function closeUploadOverlay() {
 
 }
 
+const setPreview = (src) => {
+  uploadFormPreview.src = src;
+  Array.from(document.querySelectorAll('.effects__preview')).forEach((el) => {
+    el.style.backgroundImage = `url(${src})`;
+  });
+};
+
 const showUploadOverlay = () => {
   show(uploadOverlay);
   document.body.classList.add('modal-open');
@@ -117,10 +124,11 @@ uploadInput.addEventListener('change', () => {
   const file = uploadInput.files[0];
   const fileName = file.name.toLowerCase();
 
-  const matches = FYLES_TYPES.some((it) => fileName.endsWith(it));
+  const matches = FYLES_TYPE_LIST.some((it) => fileName.endsWith(it));
   if (matches) {
-    uploadFormPreview.src = URL.createObjectURL(file);
+    const previewSrc = URL.createObjectURL(file);
     showUploadOverlay();
+    setPreview(previewSrc);
     document.addEventListener('keydown', onUploadOverlayKeydown);
   } else {
     showDataError('Неправильный формат картинки');

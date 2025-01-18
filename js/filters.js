@@ -29,13 +29,9 @@ const onFilterCLick = (evt) => {
   evt.preventDefault();
   const currentTarget = evt.target;
 
-  const currentActiveButton = filterInput.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
-
   if (!currentTarget.classList.contains('img-filters__button')) {
     return;
   }
-  currentActiveButton.classList.toggle(ACTIVE_BUTTON_CLASS);
-  currentTarget.classList.toggle(ACTIVE_BUTTON_CLASS);
 
   debouncedApplyFilter(currentTarget.id);
 };
@@ -46,5 +42,16 @@ const setFilter = (photos) => {
   filterInput.classList.remove('img-filters--inactive');
   filterInput.addEventListener('click', onFilterCLick);
 };
+
+document.querySelector('.img-filters__form').addEventListener('click', (evt) => {
+  const currentTarget = evt.target;
+  const currentActiveButton = filterInput.querySelector(`.${ACTIVE_BUTTON_CLASS}`);
+
+  if (!currentTarget.classList.contains('img-filters__button')) {
+    return;
+  }
+  currentActiveButton.classList.toggle(ACTIVE_BUTTON_CLASS);
+  currentTarget.classList.toggle(ACTIVE_BUTTON_CLASS);
+});
 
 export { setFilter };
