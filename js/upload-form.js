@@ -3,6 +3,16 @@ import { AlertType } from './consts.js';
 import { sendData } from './api.js';
 import { changeImgScale } from './effects.js';
 import { showDataError } from './render-pictures.js';
+
+const FYLES_TYPE_LIST = ['png', 'jpeg', 'jpg'];
+const HASHTAGS_MAX_COUNT = 5;
+const MAX_DESCRIPTION_LETTERS_COUNT = 140;
+const HASHTAGS_ERRORS = {
+  maxCount: 'Максимум 5 хэштегов',
+  invalidHashtag: 'Хэштег начинается с символа # и состоит только из букв и цифр и не превышает длину 20 символов',
+  repeatedHashtags: 'Хэштеги не должны повторяться'
+};
+
 const uploadForm = document.querySelector('#upload-select-image');
 const uploadInput = uploadForm.querySelector('.img-upload__input');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
@@ -10,14 +20,6 @@ const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const descriptionInput = uploadForm.querySelector('.text__description');
 const uploadFormCancelElem = uploadForm.querySelector('.img-upload__cancel');
 const uploadFormPreview = uploadForm.querySelector('.img-upload__preview img');
-const HASHTAGS_ERRORS = {
-  maxCount: 'Максимум 5 хэштегов',
-  invalidHashtag: 'Хэштег начинается с символа # и состоит только из букв и цифр и не превышает длину 20 символов',
-  repeatedHashtags: 'Хэштеги не должны повторяться'
-};
-const FYLES_TYPE_LIST = ['png', 'jpeg', 'jpg'];
-const HASHTAGS_MAX_COUNT = 5;
-const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 
 function parseHashtags(hashtags) {
   return hashtags.split(' ').filter(Boolean).map((hashtag) => hashtag.toLowerCase());
@@ -78,6 +80,7 @@ descriptionInput.addEventListener('keydown', (evt) => {
     evt.stopPropagation();
   }
 });
+
 pristine.addValidator(descriptionInput, (value) => {
   if (value.length) {
     if (value.length > MAX_DESCRIPTION_LETTERS_COUNT) {
@@ -146,14 +149,14 @@ function closeAlertElement() {
   document.removeEventListener('keydown', onAlertKeydown);
 }
 
-function onAlertClick(evt) {
+const onAlertClick = (evt) => {
   const currentElement = evt.target.closest('[class*="__inner"]');
   if (!currentElement) {
     closeAlertElement();
   }
-}
+};
 
-function showAlert(type, message) {
+const showAlert = (type, message) => {
   const alertElement = showElementFromTemplate(`#${type}`, message);
   alertElement.querySelector(`.${type}__button`).addEventListener('click', () => {
     closeAlertElement();
@@ -161,7 +164,7 @@ function showAlert(type, message) {
 
   alertElement.addEventListener('click', onAlertClick);
   document.addEventListener('keydown', onAlertKeydown);
-}
+};
 
 const setUploadFormSubmit = (onSuccess) => {
   uploadForm.addEventListener('submit', (evt) => {

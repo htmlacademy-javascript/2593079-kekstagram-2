@@ -8,17 +8,7 @@ const effectsSlider = uploadForm.querySelector('.effect-level__slider');
 const effectsValue = uploadForm.querySelector('.effect-level__value');
 const sliderContainer = uploadForm.querySelector('.img-upload__effect-level');
 
-function onSmallerBtnClick(evt) {
-  evt.preventDefault();
-  updateScale(false);
-  changeImgScale();
-}
-function onBiggerBtnClick(evt) {
-  evt.preventDefault();
-  updateScale(true);
-  changeImgScale();
-}
-function updateScale(isIncreasing) {
+const updateScale = (isIncreasing) => {
   let scaleValue = parseInt(scaleControl.value, 10);
 
   scaleValue = isIncreasing
@@ -28,11 +18,21 @@ function updateScale(isIncreasing) {
   scaleValue = Math.max(Scale.MIN_SCALE, Math.min(Scale.MAX_SCALE, scaleValue));
 
   scaleControl.value = `${scaleValue}%`;
-}
+};
+const onSmallerBtnClick = (evt) => {
+  evt.preventDefault();
+  updateScale(false);
+  changeImgScale();
+};
+const onBiggerBtnClick = (evt) => {
+  evt.preventDefault();
+  updateScale(true);
+  changeImgScale();
+};
+
 
 function changeImgScale() {
   uploadFormPreviewImg.style.transform = `scale(${parseFloat(scaleControl.value) / 100})`;
-
 }
 uploadForm.querySelector('.scale__control--smaller').addEventListener('click', onSmallerBtnClick);
 uploadForm.querySelector('.scale__control--bigger').addEventListener('click', onBiggerBtnClick);
@@ -57,7 +57,7 @@ noUiSlider.create(effectsSlider, {
   }
 });
 
-function updateEffectsSlider(effect) {
+const updateEffectsSlider = (effect) => {
   effectsSlider.noUiSlider.updateOptions({
     range: {
       max: FiltersList[effect].MAX_VALUE,
@@ -66,13 +66,13 @@ function updateEffectsSlider(effect) {
     step: FiltersList[effect].STEP,
     start: FiltersList[effect].MAX_VALUE,
   });
-}
+};
 
-function hideEffectsContainer() {
+const hideEffectsContainer = () => {
   hide(sliderContainer);
   effectsValue.value = 0;
   uploadFormPreviewImg.style.filter = 'none';
-}
+};
 
 effectsSlider.noUiSlider.on('update', () => {
   effectsValue.value = effectsSlider.noUiSlider.get();

@@ -1,3 +1,6 @@
+const PHOTOS_COUNT = 25;
+const COMMENTS_STEP = 5;
+
 const FiltersList = {
   chrome: {
     MIN_VALUE: 0,
@@ -50,9 +53,6 @@ const Scale = {
   MIN_SCALE: 25,
   SCALE_STEP: 25,
 };
-const PHOTOS_COUNT = 25;
-const COMMENTS_STEP = 5;
-
 
 export { PHOTOS_COUNT, COMMENTS_STEP, FiltersList, Scale, AlertType };
 
