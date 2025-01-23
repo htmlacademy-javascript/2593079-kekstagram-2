@@ -4,7 +4,7 @@ import { sendData } from './api.js';
 import { changeImgScale } from './effects.js';
 import { showDataError } from './render-pictures.js';
 
-const FYLES_TYPE_LIST = ['png', 'jpeg', 'jpg'];
+const ALLOWED_FILES = ['png', 'jpeg', 'jpg'];
 const HASHTAGS_MAX_COUNT = 5;
 const MAX_DESCRIPTION_LETTERS_COUNT = 140;
 const HASHTAGS_ERRORS = {
@@ -170,7 +170,7 @@ uploadInput.addEventListener('change', () => {
   const file = uploadInput.files[0];
   const fileName = file.name.toLowerCase();
 
-  const matches = FYLES_TYPE_LIST.some((it) => fileName.endsWith(it));
+  const matches = ALLOWED_FILES.some((it) => fileName.endsWith(it));
   if (matches) {
     const previewSrc = URL.createObjectURL(file);
     showUploadOverlay();
