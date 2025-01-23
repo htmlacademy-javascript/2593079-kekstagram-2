@@ -11,7 +11,7 @@ const show = (elem) => {
   elem.classList.remove('hidden');
 };
 
-const shuffleArray = (arr) => arr.slice().sort(() => 0.5 - Math.random());
+const shuffleArray = (elements) => elements.slice().sort(() => 0.5 - Math.random());
 
 const blockSubmitButton = () => {
   submitButton.disabled = true;

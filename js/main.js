@@ -6,11 +6,12 @@ import { setFilter } from './filters.js';
 
 let pictures;
 
-getData().then((photos) => {
-  pictures = photos;
-  renderPictures(pictures);
-  setFilter(pictures);
-})
+getData()
+  .then((photos) => {
+    pictures = photos;
+    renderPictures(pictures);
+    setFilter(pictures);
+  })
   .catch(showDataError);
 
 document.addEventListener('click', (evt) => {
