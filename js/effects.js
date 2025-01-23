@@ -19,6 +19,11 @@ const updateScale = (isIncreasing) => {
 
   scaleControl.value = `${scaleValue}%`;
 };
+
+const changeImgScale = () => {
+  uploadFormPreviewImg.style.transform = `scale(${parseFloat(scaleControl.value) / 100})`;
+};
+
 const onSmallerBtnClick = (evt) => {
   evt.preventDefault();
   updateScale(false);
@@ -30,10 +35,28 @@ const onBiggerBtnClick = (evt) => {
   changeImgScale();
 };
 
+const hideEffectsContainer = () => {
+  hide(sliderContainer);
+  effectsValue.value = 0;
+  uploadFormPreviewImg.style.filter = 'none';
+};
+const applyEffect = (currentEffect) => {
+  uploadFormPreviewImg.style.filter = `${FiltersList[currentEffect].EFFECT}(${effectsValue.value.toLowerCase() + FiltersList[currentEffect].UNIT_OF_MEASUREMENT}`;
+};
+const getCurrentEffect = () => uploadForm.querySelector('input[name="effect"]:checked').value.toUpperCase();
 
-function changeImgScale() {
-  uploadFormPreviewImg.style.transform = `scale(${parseFloat(scaleControl.value) / 100})`;
-}
+const updateEffectsSlider = (effect) => {
+  effectsSlider.noUiSlider.updateOptions({
+    range: {
+      max: FiltersList[effect].MAX_VALUE,
+      min: FiltersList[effect].MIN_VALUE,
+    },
+    step: FiltersList[effect].STEP,
+    start: FiltersList[effect].MAX_VALUE,
+  });
+};
+
+
 uploadForm.querySelector('.scale__control--smaller').addEventListener('click', onSmallerBtnClick);
 uploadForm.querySelector('.scale__control--bigger').addEventListener('click', onBiggerBtnClick);
 
@@ -57,40 +80,26 @@ noUiSlider.create(effectsSlider, {
   }
 });
 
-const updateEffectsSlider = (effect) => {
-  effectsSlider.noUiSlider.updateOptions({
-    range: {
-      max: FiltersList[effect].MAX_VALUE,
-      min: FiltersList[effect].MIN_VALUE,
-    },
-    step: FiltersList[effect].STEP,
-    start: FiltersList[effect].MAX_VALUE,
-  });
-};
-
-const hideEffectsContainer = () => {
-  hide(sliderContainer);
-  effectsValue.value = 0;
-  uploadFormPreviewImg.style.filter = 'none';
-};
-
 effectsSlider.noUiSlider.on('update', () => {
+
   effectsValue.value = effectsSlider.noUiSlider.get();
-  const currentEffect = uploadForm.querySelector('input[name="effect"]:checked').value;
-  if (!(currentEffect === 'none')) {
-    uploadFormPreviewImg.style.filter = `${FiltersList[currentEffect].EFFECT}(${effectsValue.value + FiltersList[currentEffect].UNIT_OF_MEASUREMENT}`;
+  const currentEffect = getCurrentEffect();
+  if (!(currentEffect === 'NONE') && currentEffect) {
+    applyEffect(currentEffect);
   }
 });
 
-uploadForm.querySelector('.img-upload__effects').addEventListener('change', (evt) => {
-  const currentEffect = evt.target.closest('input[name="effect"]:checked').value;
+uploadForm.querySelector('.img-upload__effects').addEventListener('change', () => {
+  const currentEffect = getCurrentEffect();
+
   if (currentEffect) {
-    if (currentEffect === 'none') {
+    if (currentEffect === 'NONE') {
       hideEffectsContainer();
     } else {
       show(sliderContainer);
       updateEffectsSlider(currentEffect);
-      uploadFormPreviewImg.style.filter = `${FiltersList[currentEffect].EFFECT}(${effectsValue.value + FiltersList[currentEffect].UNIT_OF_MEASUREMENT}`;
+
+      applyEffect(currentEffect);
     }
   }
 });

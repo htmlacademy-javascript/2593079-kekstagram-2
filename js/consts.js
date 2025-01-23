@@ -1,8 +1,7 @@
-const PHOTOS_COUNT = 25;
 const COMMENTS_STEP = 5;
 
 const FiltersList = {
-  chrome: {
+  CHROME: {
     MIN_VALUE: 0,
     MAX_VALUE: 1,
     STEP: 0.1,
@@ -10,7 +9,7 @@ const FiltersList = {
     EFFECT: 'grayscale'
 
   },
-  sepia: {
+  SEPIA: {
     MIN_VALUE: 0,
     MAX_VALUE: 1,
     STEP: 0.1,
@@ -18,7 +17,7 @@ const FiltersList = {
     EFFECT: 'sepia'
 
   },
-  marvin: {
+  MARVIN: {
     MIN_VALUE: 0,
     MAX_VALUE: 100,
     STEP: 1,
@@ -26,7 +25,7 @@ const FiltersList = {
     EFFECT: 'invert'
 
   },
-  phobos: {
+  PHOBOS: {
     MIN_VALUE: 0,
     MAX_VALUE: 3,
     STEP: 0.1,
@@ -34,7 +33,7 @@ const FiltersList = {
     EFFECT: 'blur'
 
   },
-  heat: {
+  HEAT: {
     MIN_VALUE: 1,
     MAX_VALUE: 3,
     STEP: 0.1,
@@ -54,6 +53,6 @@ const Scale = {
   SCALE_STEP: 25,
 };
 
-export { PHOTOS_COUNT, COMMENTS_STEP, FiltersList, Scale, AlertType };
+export { COMMENTS_STEP, FiltersList, Scale, AlertType };
 
 

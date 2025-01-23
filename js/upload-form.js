@@ -20,11 +20,6 @@ const hashtagsInput = uploadForm.querySelector('.text__hashtags');
 const descriptionInput = uploadForm.querySelector('.text__description');
 const uploadFormCancelElem = uploadForm.querySelector('.img-upload__cancel');
 const uploadFormPreview = uploadForm.querySelector('.img-upload__preview img');
-
-function parseHashtags(hashtags) {
-  return hashtags.split(' ').filter(Boolean).map((hashtag) => hashtag.toLowerCase());
-}
-
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
   succesClass: 'has-success',
@@ -34,6 +29,73 @@ const pristine = new Pristine(uploadForm, {
   errorTextClass: 'img-upload__error-text',
 
 }, true);
+
+const getAlertElement = () => Object.values(AlertType).map((value) => document.querySelector(`.${value}`)).find((elem) => elem);
+
+const setPreview = (src) => {
+  uploadFormPreview.src = src;
+  Array.from(document.querySelectorAll('.effects__preview')).forEach((el) => {
+    el.style.backgroundImage = `url(${src})`;
+  });
+};
+
+const showUploadOverlay = () => {
+  show(uploadOverlay);
+  document.body.classList.add('modal-open');
+};
+
+const onAlertClick = (evt) => {
+  const currentElement = evt.target.closest('[class*="__inner"]');
+  if (!currentElement) {
+    closeAlertElement();
+  }
+};
+
+const showAlert = (type, message) => {
+  const alertElement = showElementFromTemplate(`#${type}`, message);
+  alertElement.querySelector(`.${type}__button`).addEventListener('click', () => {
+    closeAlertElement();
+  });
+
+  alertElement.addEventListener('click', onAlertClick);
+  document.addEventListener('keydown', onAlertKeydown);
+};
+
+const setUploadFormSubmit = (onSuccess) => {
+  uploadForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    if (pristine.validate()) {
+      blockSubmitButton();
+      const formData = new FormData(evt.target);
+      sendData(formData).then(() => {
+        showAlert('success', 'Данные успешно отправлены');
+        onSuccess();
+      })
+        .catch(() => showAlert('error', 'Ошибка при отправке данных'))
+        .finally(activateSubmitButton);
+    }
+  });
+};
+
+const onUploadOverlayKeydown = (evt) => {
+  if (isEscapeKey(evt) && !getAlertElement()) {
+    closeUploadOverlay(evt);
+  }
+};
+
+const parseHashtags = (hashtags) => hashtags.split(' ').filter(Boolean).map((hashtag) => hashtag.toLowerCase());
+
+
+function onAlertKeydown(evt) {
+  if (isEscapeKey(evt)) {
+    closeAlertElement();
+  }
+}
+function closeAlertElement() {
+  getAlertElement()?.remove();
+  document.removeEventListener('keydown', onAlertKeydown);
+}
+
 
 pristine.addValidator(hashtagsInput, (value) => {
   if (value.length) {
@@ -90,13 +152,6 @@ pristine.addValidator(descriptionInput, (value) => {
   return true;
 }, 'Максимальная длина комментария 140 символов');
 
-const getAlertElement = () => Object.values(AlertType).map((value) => document.querySelector(`.${value}`)).find((elem) => elem);
-function onUploadOverlayKeydown(evt) {
-  if (isEscapeKey(evt) && !getAlertElement()) {
-    closeUploadOverlay(evt);
-  }
-}
-
 function closeUploadOverlay() {
   document.removeEventListener('keydown', onUploadOverlayKeydown);
   hide(uploadOverlay);
@@ -110,18 +165,6 @@ function closeUploadOverlay() {
   }));
 
 }
-
-const setPreview = (src) => {
-  uploadFormPreview.src = src;
-  Array.from(document.querySelectorAll('.effects__preview')).forEach((el) => {
-    el.style.backgroundImage = `url(${src})`;
-  });
-};
-
-const showUploadOverlay = () => {
-  show(uploadOverlay);
-  document.body.classList.add('modal-open');
-};
 
 uploadInput.addEventListener('change', () => {
   const file = uploadInput.files[0];
@@ -138,48 +181,8 @@ uploadInput.addEventListener('change', () => {
   }
 });
 
-uploadFormCancelElem.addEventListener('click', closeUploadOverlay);
-function onAlertKeydown(evt) {
-  if (isEscapeKey(evt)) {
-    closeAlertElement();
-  }
-}
-function closeAlertElement() {
-  getAlertElement()?.remove();
-  document.removeEventListener('keydown', onAlertKeydown);
-}
-
-const onAlertClick = (evt) => {
-  const currentElement = evt.target.closest('[class*="__inner"]');
-  if (!currentElement) {
-    closeAlertElement();
-  }
-};
-
-const showAlert = (type, message) => {
-  const alertElement = showElementFromTemplate(`#${type}`, message);
-  alertElement.querySelector(`.${type}__button`).addEventListener('click', () => {
-    closeAlertElement();
-  });
-
-  alertElement.addEventListener('click', onAlertClick);
-  document.addEventListener('keydown', onAlertKeydown);
-};
-
-const setUploadFormSubmit = (onSuccess) => {
-  uploadForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    if (pristine.validate()) {
-      blockSubmitButton();
-      const formData = new FormData(evt.target);
-      sendData(formData).then(() => {
-        showAlert('success', 'Данные успешно отправлены');
-        onSuccess();
-      })
-        .catch(() => showAlert('error', 'Ошибка при отправке данных'))
-        .finally(activateSubmitButton);
-    }
-  });
-};
+uploadFormCancelElem.addEventListener('click', () => {
+  closeUploadOverlay();
+});
 
 export { setUploadFormSubmit, closeUploadOverlay };
